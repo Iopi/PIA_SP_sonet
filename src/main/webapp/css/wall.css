@@ -1,0 +1,131 @@
+.connect-btn {
+    margin-right: 12px;
+    width: 120px;
+    text-align: center;
+    align-self: center;
+    vertical-align: middle;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+.indicator.online {
+    background: #28B62C;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+}
+
+.indicator.offline {
+    background: #FF4136;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+}
+
+.ann-tab {
+    color: red;
+}
+
+.btn-chat {
+    line-height: 12px;
+}
+
+.table-responsive {
+    margin-top: 10px;
+    display: block;
+    min-height:150px;
+    max-height:150px;
+    overflow-y: scroll;
+    border: 2px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+#postTable {
+    table-layout: fixed;
+}
+
+#postTable tr:nth-of-type(2n) {
+    border-bottom: 3px solid green;
+}
+
+#postTable tr:first-child {
+	border-top: 3px solid green;
+}
+
+.chat-panel {
+    border: 2px solid #b4b4b4;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#chat-label {
+    font-size: 14pt;
+    margin-left: 5px;
+}
+
+table#conversation td {
+    border: none;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+#message-div {
+    min-width: 80%;
+    max-width: 80%;
+}
+
+#message {
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#send {
+    margin-left: 5px;
+    margin-right: 15px;
+    font-size: 14pt;
+}
+
+#end {
+    margin-left: 15px;
+    margin-right: 5px;
+    font-size: 20pt;
+    color: red;
+}
+
+.post-panel {
+    border: 2px solid #b4b4b4;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#post-label {
+    font-size: 14pt;
+    margin-left: 5px;
+}
+
+#post-div {
+    margin-top: 10px;
+    border: 2px solid #e1e1e1;
+    border-radius: 4px;
+    min-width: 90%;
+    max-width: 90%;
+}
+
+#post-message {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+}
+
+#send-post {
+    margin-left: 6px;
+    margin-right: 15px;
+    font-size: 40pt;
+    color: green;
+}

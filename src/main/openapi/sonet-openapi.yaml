@@ -1,0 +1,59 @@
+# Sonet - API definition
+openapi: 3.0.3
+info:
+  title: Sonet API
+  description: KIV/PIA Sonet API - semestral project - pruchapa
+  version: 1.0.0
+
+tags:
+  - name: user
+    description: User management entry points
+
+paths:
+  '/api/user/save':
+    put:
+      summary: Update user info
+      description: Update logged user info.
+      operationId: updateUserInfo
+      tags:
+        - user
+      requestBody:
+        $ref: '#/components/requestBodies/UserInfoRequest'
+      responses:
+        default:
+          $ref: '#/components/responses/UserInfoResponse'
+          description: User was successfully updated.
+
+components:
+  requestBodies:
+    UserInfoRequest:
+      description: Request body to update a user.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserInfo'
+
+  responses:
+    UserInfoResponse:
+      description: Response to the getUser operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserInfo'
+
+  schemas:
+    UserInfo:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Karel
+        lastName:
+          type: string
+          example: Havlíček
+      required:
+        - firstName
+        - lastName
+      example:
+        firstName: Karel
+        lastName: Havlíček

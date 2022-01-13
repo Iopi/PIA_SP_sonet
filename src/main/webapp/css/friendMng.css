@@ -1,0 +1,137 @@
+.connect-btn {
+    margin-right: 12px;
+    width: 120px;
+    text-align: center;
+    align-self: center;
+    vertical-align: middle;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+
+.indicator.online {
+    background: #28B62C;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+}
+
+.indicator.offline {
+    background: #FF4136;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+}
+
+.user-tab {
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+.status-tab {
+    width: 10px;
+    max-width: 10px;
+    min-width: 10px;
+}
+
+.btn-add-friend {
+    line-height: 12px;
+}
+
+.btn-remove-friend {
+    line-height: 12px;
+}
+
+.btn-block {
+    line-height: 12px;
+}
+
+.btn-remove-block {
+    line-height: 12px;
+}
+
+.btn-remove-request {
+    line-height: 12px;
+}
+
+.btn-accept-request {
+    line-height: 12px;
+}
+
+.btn-already-friend {
+    line-height: 12px;
+}
+
+.btn-decline-request {
+    line-height: 12px;
+}
+
+.find-btn {
+    margin-right: 12px;
+    width: 120px;
+    text-align: center;
+    align-self: center;
+    vertical-align: middle;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+.table-responsive {
+    margin-top: 10px;
+    display: block;
+    min-height:150px;
+    max-height:150px;
+    overflow-y: scroll;
+    border: 2px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+.chat-panel {
+    border: 2px solid #b4b4b4;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#chat-label {
+    font-size: 14pt;
+    margin-left: 5px;
+}
+
+table#conversation td {
+    border: none;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+#message-div {
+    min-width: 80%;
+    max-width: 80%;
+}
+
+#message {
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#send {
+    margin-left: 6px;
+    margin-right: 15px;
+    font-size: 14pt;
+}
+
+#end {
+    margin-left: 75px;
+    margin-right: 5px;
+    font-size: 20pt;
+    color: red;
+}
+
+#username {
+    margin-left: 10px;
+}
+

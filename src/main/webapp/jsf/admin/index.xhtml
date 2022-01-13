@@ -1,0 +1,195 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="https://joinfaces.org/security"
+	xmlns:p="http://primefaces.org/ui"
+	
+	template="/WEB-INF/jsf/base.xhtml"
+	lang="cs">
+
+	<ui:define name="stylesheets">
+		<link rel="stylesheet"
+			  type="text/css"
+			  href="/css/admin.css"
+		/>
+	</ui:define>
+
+	<ui:define name="title">Administration</ui:define>
+		
+	<ui:define name="body">
+		<sec:authorize access="hasRole('ADMIN')">
+			<h1>Administration</h1>
+
+			<p:dataTable
+				value="#{adminService.userDomainList}"
+				var="user"
+				styleClass="borderless"
+				headerClass="align-middle"
+				id="usersTable"
+				reflow="true"
+				>
+				<p:column headerText="Email">
+					<f:facet name="header">User</f:facet>
+					#{user.username}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Role</f:facet>
+					#{user.authorities}
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:form id="createUserForm">
+							<h:commandLink
+								styleClass="btn btn-success mr-2"
+								title="Add user"
+								action="#{adminService.createUser}">
+								<em class="fa fa-user"></em>
+								<f:ajax execute="@form" render=":userDetailView" onevent="openUserEvent" />
+							</h:commandLink>
+						</h:form>
+					</f:facet>
+					<h:form id="selectUserForm" rendered="#{user.username != loggedUser.user.username}">
+						<h:commandLink
+							styleClass="btn btn-warning mr-2"
+							title="Edit user">
+							<em class="fa fa-pen"></em>
+							<f:ajax render=":userDetailView" onevent="openUserEvent" />
+							<f:setPropertyActionListener value="#{user}" target="#{adminService.user}" />
+						</h:commandLink>
+						<h:commandLink
+								styleClass="btn #{user.admin ? 'btn-secondary' : 'btn-primary'} grant-btn"
+								action="#{adminService.grantAdmin}"
+								value="#{user.admin ? 'Ungrant admin' : 'Grant admin'}"
+						>
+							<f:setPropertyActionListener value="#{user}" target="#{adminService.user}" />
+							<f:ajax execute="@form" render="usersTable" />
+						</h:commandLink>
+					</h:form>
+				</p:column>
+			</p:dataTable>
+			<h:panelGroup id="userDetailView">
+				<div id="userDetailModal" class="modal">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<h:form id="userDetailForm">
+								<div class="modal-header">
+									<h5 class="modal-title">User detail</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true"><em class="fa fa-times"></em></span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<h:panelGroup id="messages">
+										<h:messages />
+									</h:panelGroup>
+									<div class="form-group row">
+										<h:outputLabel for="username" styleClass="col-md-4 col-form-label">
+											Email:
+										</h:outputLabel>
+										<div class="col-md-8">
+											<h:inputText
+												id="username"
+												value="#{adminService.user.username}"
+												styleClass="form-control"
+												tabindex="1"
+												required="true"
+												requiredMessage="E-mail is required."
+												readonly="#{adminService.hasUsername}"
+												validatorMessage="Wrong type of email address format!"
+											>
+												<f:validateRegex pattern="([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)" />
+											</h:inputText>
+										</div>
+									</div>
+									<div class="form-group row">
+										<h:outputLabel for="fisrtName" styleClass="col-md-4 col-form-label">
+											First name:
+										</h:outputLabel>
+										<div class="col-md-8">
+											<h:inputText
+													id="fisrtName"
+													value="#{adminService.user.firstName}"
+													styleClass="form-control"
+													tabindex="1"
+													required="true"
+													requiredMessage="First name is required."
+													readonly="#{adminService.hasFirstName}"
+											/>
+										</div>
+									</div>
+									<div class="form-group row">
+										<h:outputLabel for="lastName" styleClass="col-md-4 col-form-label">
+											Last name:
+										</h:outputLabel>
+										<div class="col-md-8">
+											<h:inputText
+													id="lastName"
+													value="#{adminService.user.lastName}"
+													styleClass="form-control"
+													tabindex="1"
+													required="true"
+													requiredMessage="Last name is required."
+													readonly="#{adminService.hasLastName}"
+											/>
+										</div>
+									</div>
+									<div class="form-group row">
+										<h:outputLabel for="newPassword1" styleClass="col-md-4 col-form-label">
+											Password:
+										</h:outputLabel>
+										<div class="col-md-8">
+											<h:inputSecret
+												id="newPassword1"
+												value="#{adminService.newPassword1}"
+												styleClass="form-control"
+												tabindex="1"
+												required="true"
+												requiredMessage="Password is required."
+												validatorMessage="Password is too short. Minimum length is 5 characters."
+											>
+												<f:validateLength minimum="5" />
+											</h:inputSecret>
+
+										</div>
+									</div>
+									<div class="form-group row">
+										<h:outputLabel for="newPassword2" styleClass="col-md-4 col-form-label">
+											Repeat password:
+										</h:outputLabel>
+										<div class="col-md-8">
+											<h:inputSecret
+												id="newPassword2"
+												value="#{adminService.newPassword2}"
+												styleClass="form-control"
+												tabindex="1"
+												required="true"
+												requiredMessage="Repeat your password is required."
+												/>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<h:commandLink
+										styleClass="btn btn-secondary"
+										tabindex="1">
+										Close
+										<f:ajax onevent="closeUserEvent" />
+										<f:setPropertyActionListener value="#{null}" target="#{adminService.user}" />
+									</h:commandLink>
+									<h:commandLink
+										styleClass="btn btn-primary"
+										action="#{adminService.saveUser}"
+										tabindex="1">
+										Save
+										<f:ajax execute="@form" render=":usersTable @form" />
+									</h:commandLink>
+								</div>
+							</h:form>
+						</div>
+					</div>
+				</div>
+			</h:panelGroup>
+		</sec:authorize>	
+	</ui:define>
+</ui:composition>

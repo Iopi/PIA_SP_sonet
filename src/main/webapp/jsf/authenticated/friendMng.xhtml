@@ -1,0 +1,143 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:sec="https://joinfaces.org/security"
+
+                template="/WEB-INF/jsf/base.xhtml"
+                lang="cs">
+
+    <ui:define name="stylesheets">
+        <link rel="stylesheet"
+              type="text/css"
+              href="/css/friendMng.css"
+        />
+    </ui:define>
+
+    <ui:define name="scripts">
+        <script type="text/javascript" src="/js/friendMng.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/sockjs-client/sockjs.min.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/stomp-websocket/stomp.min.js"></script>
+    </ui:define>
+
+    <ui:define name="title">FriendMng</ui:define>
+
+    <ui:define name="body">
+        <h1>Friends management</h1>
+        <div class="row">
+            <div class="col-12">
+                <form class="form-inline ws-form">
+                    <div class="form-group">
+                        <button id="connect" class="btn btn-primary connect-btn" data-csrf="#{_csrf.token}" type="submit" hidden="hidden">Online</button>
+                        <button id="disconnect" class="btn btn-secondary connect-btn" type="submit" disabled="disabled" hidden="hidden">Offline</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <h:form id="findUsersByName">
+                <div class="form row">
+                    <label class="col-md-4 col-form-label">
+                        Search users:
+                    </label>
+                    <input required="required" class="col-md-5 form-control" name="username" id="username" placeholder="username" />
+                    <a id="list-all-users" href="#all-users" class="btn btn-primary" onclick="findUsers(); return false;">Find users</a>
+                </div>
+            </h:form>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <table class="table align-middle" id="allTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-5 col-md-8 col-sm-8 col-8">
+                        <div class="list-group" id="list-tab" role="tablist">
+                            <a
+                                    class="list-group-item list-group-item-action active"
+                                    id="list-friends"
+                                    data-toggle="list"
+                                    href="#friends"
+                                    role="tab">Friends</a>
+                            <a
+                                    class="list-group-item list-group-item-action"
+                                    id="list-blocked"
+                                    data-toggle="list"
+                                    href="#blocked"
+                                    role="tab">Blocked users</a>
+                            <a
+                                    class="list-group-item list-group-item-action"
+                                    id="list-sent-requests"
+                                    data-toggle="list"
+                                    href="#sent-requests"
+                                    role="tab">Sent requests</a>
+                            <a
+                                    class="list-group-item list-group-item-action"
+                                    id="list-user-requests"
+                                    data-toggle="list"
+                                    href="#user-requests"
+                                    role="tab">Friend requests</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="friends" role="tabpanel" aria-labelledby="list-friends">
+                                <table class="table align-middle" id="friendsTable">
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="blocked" role="tabpanel" aria-labelledby="list-blocked">
+                                <button id="btn-remove-block-hide" style="display: none;" />
+                                <table class="table align-middle" id="blockedTable">
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="sent-requests" role="tabpanel" aria-labelledby="list-sent-requests">
+                                <button id="btn-remove-request-hide" style="display: none;" />
+                                <table class="table align-middle" id="sentReqTable">
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="user-requests" role="tabpanel" aria-labelledby="list-user-requests">
+                                <button id="btn-accept-request-hide" style="display: none;" />
+                                <table class="table align-middle" id="acceptReqTable">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="chat-window" class="col-md-12" hidden="hidden">
+                <label id="chat-label">Chat</label>
+                <div class="panel panel-default chat-panel">
+                    <form class="form-inline ws-form">
+                        <a id="send" class="fa fa-share" type="submit" onclick="sendMessage();"/>
+                        <div id="message-div" class="form-group">
+                            <input type="text" id="message" class="form-control message" placeholder="Write your message..."/>
+                        </div>
+                        <a id="end" class="fa fa-times-circle" type="submit" onclick="disconnectChat();"/>
+                    </form>
+                    <div class="panel-body table-responsive">
+                        <table id="conversation" class="table table-bordered">
+                            <tbody id="chat">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="https://joinfaces.org/security"
+	
+	template="/WEB-INF/jsf/base.xhtml"
+	lang="cs">
+
+	<ui:define name="stylesheets">
+		<link rel="stylesheet"
+			  type="text/css"
+			  href="/css/index.css"
+		/>
+	</ui:define>
+
+	<ui:define name="title">Home</ui:define>
+	
+	<ui:define name="body">
+		<div class="row">
+			<div class="col text-center">
+				<h2>Social Network</h2>
+				<h1 id="sonet">Sonet</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col text-center">
+				<sec:authorize access="isAnonymous()">
+					<a href="/login" class="btn btn-primary main-btn">
+						Log In
+					</a>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+					<form action="/logout" method="post">
+						<button type="submit" class="btn btn-primary main-btn">Log Out</button>
+						<input type="hidden" name="#{_csrf.parameterName}" value="#{_csrf.token}"/>
+					</form>
+				</sec:authorize>
+				<sec:authorize access="isAnonymous()">
+					<a href="/registration" class="btn btn-primary main-btn">Sign Up</a>
+				</sec:authorize>
+			</div>
+		</div>
+	</ui:define>
+	
+</ui:composition>

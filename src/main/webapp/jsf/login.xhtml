@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:sec="https://joinfaces.org/security"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	
+	template="/WEB-INF/jsf/base.xhtml"
+	lang="cs">
+
+	<ui:define name="stylesheets">
+		<link rel="stylesheet"
+			  type="text/css"
+			  href="/css/login.css"
+		/>
+	</ui:define>
+
+	<ui:define name="title">Log In</ui:define>
+	
+	<ui:define name="body">
+		<div class="container">
+			<h1>Log In</h1>
+
+			<c:if test="#{param['error'] != null ? (param['error'] eq true ? 'true' : 'false') : 'false'}">
+				<div class="row mb-3">
+					<p class="alert mb-4 alert-danger">
+						Wrong e-mail address or password.
+					</p>
+				</div>
+			</c:if>
+
+			<form action="/login" method="post">
+				<div class="form row">
+					<label class="col-md-2 col-form-label">
+						E-mail:
+					</label>
+					<input type="text" required="required" class="col-md-5 form-control" name="username" placeholder="username@email.com" />
+				</div>
+				<div class="form row">
+					<label class="col-md-2 col-form-label">
+						Password:
+					</label>
+					<input type="password" required="required" class="col-md-5 form-control" name="password" placeholder="password" />
+					<input type="hidden" name="#{_csrf.parameterName}" value="#{_csrf.token}"/>
+				</div>
+				<div class="form row">
+					<button type="submit" class="btn btn-primary">Log In</button>
+				</div>
+			</form>
+		</div>
+	</ui:define>
+	
+</ui:composition>

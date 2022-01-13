@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:sec="https://joinfaces.org/security"
+
+                template="/WEB-INF/jsf/base.xhtml"
+                lang="cs">
+
+    <ui:define name="stylesheets">
+        <link rel="stylesheet"
+              type="text/css"
+              href="/css/wall.css"
+        />
+    </ui:define>
+
+    <ui:define name="scripts">
+        <script type="text/javascript" src="/js/wall.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/sockjs-client/sockjs.min.js"></script>
+        <script src="${pageContext.request.contextPath}/webjars/stomp-websocket/stomp.min.js"></script>
+        <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+    </ui:define>
+
+    <ui:define name="title">Wall</ui:define>
+
+    <ui:define name="body">
+        <h1>Wall</h1>
+
+        <div class="row">
+            <div class="col-12">
+                <form class="form-inline ws-form">
+                    <div class="form-group">
+                        <button id="connect" class="btn btn-primary connect-btn" data-csrf="#{_csrf.token}" type="submit" hidden="hidden">Online</button>
+                        <button id="disconnect" class="btn btn-secondary connect-btn" type="submit" disabled="disabled" hidden="hidden">Offline
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
+                <h3>Online friends</h3>
+                <div>
+                    <table class="table align-middle" id="friendsListTable">
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-7 col-sm-12">
+                <h3>Posts</h3>
+                <div class="">
+                    <table  style="width:100%" class="table align-middle" id="postTable">
+                    </table>
+                </div>
+                <div id="post-window">
+                    <label id="post-label">New post</label>
+                    <div class="panel panel-default post-panel">
+                        <sec:authorize access="hasRole('ADMIN')">
+                            <input type="checkbox" id="announcement" name="announcement"/>
+                            <label for="announcement"> Announcement </label><br/>
+                        </sec:authorize>
+                        <form class="form-inline ws-form">
+                            <a id="send-post" class="fa fa-thumbtack" type="submit" onclick="pinPost();"/>
+                            <div id="post-div" class="form-group">
+                                <textarea name="post-message" id="post-message" cols="80" rows="5">Write your post... (max 255 symbols)</textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="chat-window" class="col-md-12" hidden="hidden">
+                <label id="chat-label">Chat</label>
+                <div class="panel panel-default chat-panel">
+                    <form class="form-inline ws-form">
+                        <a id="send" class="fa fa-share" type="submit" onclick="sendMessage();"/>
+                        <div id="message-div" class="form-group">
+                            <input type="text" id="message" class="form-control message" placeholder="Write your message..."/>
+                        </div>
+                        <a id="end" class="fa fa-times-circle" type="submit" onclick="disconnectChat();"/>
+                    </form>
+                    <div class="panel-body table-responsive">
+                        <table id="conversation" class="table table-bordered">
+                            <tbody id="chat">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+</ui:composition>
