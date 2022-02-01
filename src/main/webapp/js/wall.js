@@ -176,19 +176,22 @@ function chatFriend(message) {
 
 function sendMessage() {
     let message = $("#message");
+    let text = message.val();
 
     if (message.val() === "") {
         return;
     }
 
+    text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
     let value = {
-        'message': message.val(),
+        'message': text,
         'user' : null
     };
 
     stompClient.send("/app/client/send", {}, JSON.stringify(value));
 
-    getChatMessage({'message' : message.val(), 'user' : 'You'});
+    getChatMessage({'message' : text, 'user' : 'You'});
 
     message.val("");
 }
@@ -211,12 +214,15 @@ function endChat() {
 function pinPost() {
     let message = $('#post-message');
     let announcement = $('#announcement');
+    let text = message.val();
     if (message.val() === "") {
         return;
     }
 
+    text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
     let value = {
-        'text': message.val(),
+        'text': text,
         'username' : null,
         'time' : null,
         'announcement' : announcement.is(":checked")
