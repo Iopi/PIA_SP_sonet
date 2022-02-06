@@ -51,6 +51,14 @@ public class UserEntity extends AbstractEntity {
     )
     private Set<RoleEntity> roles = new HashSet<>();
 
+    /*@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_post_tab",
+            joinColumns = @JoinColumn(name = "user_tab_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "post_tab_id", referencedColumnName = "id")
+    )
+    private Set<PostEntity> likes = new HashSet<>();*/
+
     public UserEntity(@NotNull @Pattern(regexp = Constants.LOGIN_REGEX) @Size(min = 1, max = 100) String username, @NotNull String password, @NotNull @Size(min = 1, max = 100) String firstName, @NotNull @Size(min = 1, max = 100) String lastName) {
         this.username = username;
         this.password = password;

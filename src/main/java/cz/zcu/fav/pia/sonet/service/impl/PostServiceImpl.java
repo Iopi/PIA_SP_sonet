@@ -3,10 +3,7 @@ package cz.zcu.fav.pia.sonet.service.impl;
 import cz.zcu.fav.pia.sonet.domain.RoleEnum;
 import cz.zcu.fav.pia.sonet.domain.UserDomain;
 import cz.zcu.fav.pia.sonet.dto.UserDTO;
-import cz.zcu.fav.pia.sonet.entity.BlockEntity;
-import cz.zcu.fav.pia.sonet.entity.PostEntity;
-import cz.zcu.fav.pia.sonet.entity.RoleEntity;
-import cz.zcu.fav.pia.sonet.entity.UserEntity;
+import cz.zcu.fav.pia.sonet.entity.*;
 import cz.zcu.fav.pia.sonet.repository.*;
 import cz.zcu.fav.pia.sonet.service.FriendService;
 import cz.zcu.fav.pia.sonet.service.LoggedUserService;
@@ -36,6 +33,7 @@ public class PostServiceImpl implements PostService {
     private final UserEntityRepository userEntityRepository;
     private final PostEntityRepository postEntityRepository;
     private final RoleEntityRepository roleEntityRepository;
+    private final LikeEntityRepository likeEntityRepository;
 
     private final LoggedUserService loggedUserService;
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -56,9 +54,11 @@ public class PostServiceImpl implements PostService {
         String time = dtf.format(now);
 
         UserEntity loggedUserEntity = userEntityRepository.findUserEntityByUsername(loggedUser);
+
         PostEntity postEntity = new PostEntity(time, text, announcement, loggedUserEntity);
 
         postEntityRepository.save(postEntity);
+
     }
 
     @Override
@@ -92,5 +92,55 @@ public class PostServiceImpl implements PostService {
         }
 
         return allPostEntityList;
+    }
+
+    @Override
+    public int likePost(String loggedUser, String uuid) {
+        PostEntity postEntity = null;
+        UUID sameUuid = UUID.fromString(uuid);
+
+        Optional<PostEntity> optPostEntity = postEntityRepository.findById(sameUuid);
+        if (optPostEntity.isPresent())
+            postEntity = optPostEntity.get();
+        else
+            return 1;
+
+        if (postEntity.getUser1().getUsername().equals(loggedUser)) {
+            return 2;
+        }
+
+        List<LikeEntity> likeEnts = likeEntityRepository.findAllByPostId(sameUuid);
+
+        UserEntity userEntity = userEntityRepository.findUserEntityByUsername(loggedUser);
+
+        for (LikeEntity likeEnt : likeEnts) {
+            UserEntity userEnt = likeEnt.getUser1();
+            if (userEnt.getUsername().equals(loggedUser)) {
+                List<LikeEntity> likeEntities = likeEntityRepository.findAllByUser1UsernameAndPostId(loggedUser, sameUuid);
+                for (LikeEntity le : likeEntities)
+                    likeEntityRepository.delete(le);
+                return 3;
+            }
+
+        }
+
+        LikeEntity likeEntity = new LikeEntity(userEntity, postEntity);
+        likeEntityRepository.save(likeEntity);
+
+        return 0;
+    }
+
+    @Override
+    public List<String> getAllLikers(PostEntity postEntity) {
+        List<String> likers = new ArrayList<>();
+        UserEntity userEnt;
+        List<LikeEntity> likeEntities = likeEntityRepository.findAllByPostId(postEntity.getId());
+
+        for (LikeEntity likeEntity : likeEntities) {
+            userEnt = likeEntity.getUser1();
+            likers.add(userEnt.getUsername());
+        }
+
+        return likers;
     }
 }

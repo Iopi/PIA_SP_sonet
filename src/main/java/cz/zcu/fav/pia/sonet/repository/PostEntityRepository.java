@@ -1,6 +1,7 @@
 package cz.zcu.fav.pia.sonet.repository;
 
 import cz.zcu.fav.pia.sonet.entity.PostEntity;
+import cz.zcu.fav.pia.sonet.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

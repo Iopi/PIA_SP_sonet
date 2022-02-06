@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.List;
+
 
 @Entity
 @Table(name = "post_tab")
@@ -33,5 +33,6 @@ public class PostEntity extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_1", referencedColumnName = "id")
     private UserEntity user1;
+
 
 }

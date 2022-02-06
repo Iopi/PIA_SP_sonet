@@ -45,5 +45,5 @@ Po prvním spuštění aplikace jsou v databázi vytvořeny uživatelské účty
 
 Ze sekce Bonus part bylo implementováno:
 * generování kódu přes OpenAPI/Swagger
-* possibility to show older posts  
+* likes  
 

@@ -1,7 +1,10 @@
 package cz.zcu.fav.pia.sonet.controller.stomp;
 
 import cz.zcu.fav.pia.sonet.dto.*;
+import cz.zcu.fav.pia.sonet.entity.LikeEntity;
 import cz.zcu.fav.pia.sonet.entity.PostEntity;
+import cz.zcu.fav.pia.sonet.repository.LikeEntityRepository;
+import cz.zcu.fav.pia.sonet.repository.PostEntityRepository;
 import cz.zcu.fav.pia.sonet.service.LoggedUserService;
 import cz.zcu.fav.pia.sonet.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +16,7 @@ import org.springframework.stereotype.Controller;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -25,6 +26,9 @@ public class PostController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final LoggedUserService loggedUserService;
     private final PostService postService;
+
+
+    private final LikeEntityRepository likeEntityRepository;
 
 
     @MessageMapping("/client/post")
@@ -38,9 +42,11 @@ public class PostController {
     public void getAllPosts() {
         String loggedUser = loggedUserService.getUser().getUsername();
         List<PostDTO> posts = new ArrayList<>();
+        List<String> likers;
 
         for (PostEntity postEntity : postService.getPostsByUser(loggedUser)) {
-            posts.add(new PostDTO(postEntity.getUser1().getUsername(), postEntity.getTime(), postEntity.getText(), postEntity.isAnnouncement()));
+            likers = postService.getAllLikers(postEntity);
+            posts.add(new PostDTO(postEntity.getId().toString(), postEntity.getUser1().getUsername(), postEntity.getTime(), postEntity.getText(), postEntity.isAnnouncement(), likers));
         }
 
         posts.sort(new Comparator<PostDTO>() {
@@ -56,5 +62,22 @@ public class PostController {
         });
 
         simpMessagingTemplate.convertAndSendToUser(loggedUserService.getUser().getUsername(), "/client/get-posts", posts);
+    }
+
+    @MessageMapping("/client/like")
+    public void likePost(LikeDTO like) {
+        String loggedUser = loggedUserService.getUser().getUsername();
+
+        int code = postService.likePost(loggedUser, like.getUuidstr());
+
+        if (code == 0) {
+            simpMessagingTemplate.convertAndSendToUser(loggedUserService.getUser().getUsername(), "/client/liked", new UserDTO(loggedUser));
+        } else if (code == 1) {
+            log.info("Post not found.");
+        } else if (code == 2) {
+            simpMessagingTemplate.convertAndSendToUser(loggedUserService.getUser().getUsername(), "/client/my-post", new UserDTO(loggedUser));
+        } else {
+            simpMessagingTemplate.convertAndSendToUser(loggedUserService.getUser().getUsername(), "/client/unliked", new UserDTO(loggedUser));
+        }
     }
 }

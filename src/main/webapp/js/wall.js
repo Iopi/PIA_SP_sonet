@@ -43,6 +43,15 @@ function connect(csrf) {
         stompClient.subscribe('/user/client/length', function (message) {
             tooLong(JSON.parse(message.body));
         });
+        stompClient.subscribe('/user/client/my-post', function (message) {
+            myPost(JSON.parse(message.body));
+        });
+        stompClient.subscribe('/user/client/unliked', function (message) {
+            postUnliked(JSON.parse(message.body));
+        });
+        stompClient.subscribe('/user/client/liked', function (message) {
+            postLiked(JSON.parse(message.body));
+        });
     });
 
     intervalIDFriends = setInterval(friendsRequest, 1000);
@@ -110,31 +119,32 @@ function showPosts(message) {
 
     for (let i = 0; i < message.length; i++) {
 
+        let uuid = message[i].uuid;
         let username = message[i].username;
         let time = message[i].time;
         let text = message[i].text;
         let announcement = message[i].announcement;
-
+        let userslikes = message[i].userslikes;
+        let tableString = "<tr>";
         if (announcement) {
-            postTable.append(
-                "<tr>" +
-                "<td class='ann-tab'>" + username + " -Announcement- </td>" +
-                "<td>" + time + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<td>" + text + "</td>" +
-                "</tr>");
+            tableString += "<td class='ann-tab'>" + username + " -Announcement- </td>";
         } else {
-            postTable.append(
-                "<tr>" +
-                "<td>" + username + "</td>" +
-                "<td>" + time + "</td>" +
-                "</tr>" +
-                "<tr>" +
-                "<td>" + text + "</td>" +
-                "</tr>");
+            tableString += "<td>" + username + "</td>";
+        }
+        tableString += "<td class='li-tab'><div class='dropdown'><a id='likes' class='fa fa-thumbs-up' type='submit' onclick=\"likeIt('" + uuid + "')\"/>" +
+                                       "<div class='dropdown-content'>";
+        for (let j = 0; j < userslikes.length; j++) {
+            tableString += "<a>" + userslikes[j] + "</a>";
         }
 
+        tableString += "</div></div><label>" + userslikes.length + "</label></td>" +
+                       "<td>" + time + "</td>" +
+                       "</tr>" +
+                       "<tr>" +
+                       "<td>" + text + "</td>" +
+                       "</tr>";
+
+        postTable.append(tableString);
 
     }
 }
@@ -218,24 +228,53 @@ function pinPost() {
     if (message.val() === "") {
         return;
     }
+    alertify.success("1", 3);
+
 
     text = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
     let value = {
+        'uuid' : null,
         'text': text,
         'username' : null,
         'time' : null,
-        'announcement' : announcement.is(":checked")
+        'announcement' : announcement.is(":checked"),
+        'userslikes' : null
     };
+
+   alertify.success("1", 3);
+
 
     stompClient.send("/app/client/post", {}, JSON.stringify(value));
 
     message.val("");
 
+    alertify.success("1", 3);
+
+
 }
 
 function tooLong(message) {
     alertify.error('Your post is too long! (max 255)', 3);
+}
+
+function myPost(message) {
+    alertify.error('You cant like your post.', 3);
+}
+
+function postUnliked(message) {
+    alertify.success('Post unliked', 3);
+}
+
+function postLiked(message) {
+    alertify.success('Post liked', 3);
+}
+
+function likeIt(uuid) {
+    let value = {'uuidstr' : uuid};
+
+    stompClient.send("/app/client/like", {}, JSON.stringify(value));
+
 }
 
 $(function () {
